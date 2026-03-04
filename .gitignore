@@ -1,0 +1,31 @@
+# Next.js
+frontend-next/node_modules/
+frontend-next/.next/
+frontend-next/out/
+frontend-next/build/
+frontend-next/.env*
+
+# Python
+backend/__pycache__/
+backend/*.py[cod]
+backend/*$py.class
+backend/.env
+backend/.env.production
+backend/venv/
+backend/env/
+backend/*.db
+backend/.pytest_cache/
+backend/logo_base64.txt
+backend/error_log.txt
+
+# Docker
+docker-compose.override.yml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+.gemini/
