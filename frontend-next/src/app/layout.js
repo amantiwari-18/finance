@@ -3,6 +3,13 @@ import './globals.css';
 export const metadata = {
   title: 'PPSJ Financial Solutions',
   description: 'Premium wealth management and financial tracking suite.',
+  manifest: '/manifest.json',
+  themeColor: '#000000',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'FinanceTracker',
+  },
 };
 
 import { Toaster } from 'react-hot-toast';
