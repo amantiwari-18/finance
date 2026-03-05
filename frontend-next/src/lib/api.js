@@ -35,7 +35,7 @@ async function request(path, options = {}) {
 // ---------- Auth ----------
 export const authAPI = {
     async register(email, password) {
-        return request('/api/auth/register', {
+        return request('/api/v1/auth/register', {
             method: 'POST',
             body: JSON.stringify({ email, password }),
         });
@@ -46,7 +46,7 @@ export const authAPI = {
         form.append('username', email);
         form.append('password', password);
 
-        const res = await fetch(`${API_BASE}/api/auth/login`, {
+        const res = await fetch(`${API_BASE}/api/v1/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: form,
@@ -65,17 +65,17 @@ export const authAPI = {
 
 // ---------- Categories ----------
 export const categoriesAPI = {
-    getAll: () => request('/api/categories'),
-    create: (data) => request('/api/categories', { method: 'POST', body: JSON.stringify(data) }),
-    delete: (id) => request(`/api/categories/${id}`, { method: 'DELETE' }),
+    getAll: () => request('/api/v1/categories'),
+    create: (data) => request('/api/v1/categories', { method: 'POST', body: JSON.stringify(data) }),
+    delete: (id) => request(`/api/v1/categories/${id}`, { method: 'DELETE' }),
 };
 
 // ---------- Subcategories ----------
 export const subcategoriesAPI = {
     getAll: (categoryId) =>
-        request(`/api/subcategories${categoryId ? `?category_id=${categoryId}` : ''}`),
-    create: (data) => request('/api/subcategories', { method: 'POST', body: JSON.stringify(data) }),
-    delete: (id) => request(`/api/subcategories/${id}`, { method: 'DELETE' }),
+        request(`/api/v1/subcategories${categoryId ? `?category_id=${categoryId}` : ''}`),
+    create: (data) => request('/api/v1/subcategories', { method: 'POST', body: JSON.stringify(data) }),
+    delete: (id) => request(`/api/v1/subcategories/${id}`, { method: 'DELETE' }),
 };
 
 // ---------- Transactions ----------
@@ -85,17 +85,17 @@ export const transactionsAPI = {
         Object.entries(filters).forEach(([k, v]) => {
             if (v !== undefined && v !== null && v !== '') params.append(k, v);
         });
-        return request(`/api/transactions?${params}`);
+        return request(`/api/v1/transactions?${params}`);
     },
-    create: (data) => request('/api/transactions', { method: 'POST', body: JSON.stringify(data) }),
+    create: (data) => request('/api/v1/transactions', { method: 'POST', body: JSON.stringify(data) }),
     createBulk: (transactions) =>
-        request('/api/transactions/bulk', { method: 'POST', body: JSON.stringify({ transactions }) }),
+        request('/api/v1/transactions/bulk', { method: 'POST', body: JSON.stringify({ transactions }) }),
     update: (id, data) =>
-        request(`/api/transactions/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
-    delete: (id) => request(`/api/transactions/${id}`, { method: 'DELETE' }),
+        request(`/api/v1/transactions/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+    delete: (id) => request(`/api/v1/transactions/${id}`, { method: 'DELETE' }),
     async exportExcel(rangeType = 'all', method = 'download') {
         const token = getToken();
-        const url = `${API_BASE}/api/export/transactions?range_type=${rangeType}&method=${method}`;
+        const url = `${API_BASE}/api/v1/export/transactions?range_type=${rangeType}&method=${method}`;
         const res = await fetch(url, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -114,9 +114,9 @@ export const transactionsAPI = {
 
 // ---------- Budgets ----------
 export const budgetsAPI = {
-    getAll: () => request('/api/budgets'),
-    create: (data) => request('/api/budgets', { method: 'POST', body: JSON.stringify(data) }),
-    delete: (id) => request(`/api/budgets/${id}`, { method: 'DELETE' }),
+    getAll: () => request('/api/v1/budgets'),
+    create: (data) => request('/api/v1/budgets', { method: 'POST', body: JSON.stringify(data) }),
+    delete: (id) => request(`/api/v1/budgets/${id}`, { method: 'DELETE' }),
 };
 
 // ---------- Analytics ----------
@@ -126,15 +126,15 @@ export const analyticsAPI = {
         Object.entries(params).forEach(([k, v]) => {
             if (v) q.append(k, v);
         });
-        return request(`/api/analytics/summary?${q}`);
+        return request(`/api/v1/analytics/summary?${q}`);
     },
 };
 
 // ---------- Loans ----------
 export const loansAPI = {
-    getAll: () => request('/api/loans'),
-    create: (data) => request('/api/loans', { method: 'POST', body: JSON.stringify(data) }),
-    delete: (id) => request(`/api/loans/${id}`, { method: 'DELETE' }),
+    getAll: () => request('/api/v1/loans'),
+    create: (data) => request('/api/v1/loans', { method: 'POST', body: JSON.stringify(data) }),
+    delete: (id) => request(`/api/v1/loans/${id}`, { method: 'DELETE' }),
 };
 
 // ---------- Import ----------
@@ -142,6 +142,6 @@ export const importAPI = {
     async importExcel(file) {
         const form = new FormData();
         form.append('file', file);
-        return request('/api/import/excel', { method: 'POST', body: form });
+        return request('/api/v1/import/excel', { method: 'POST', body: form });
     },
 };
