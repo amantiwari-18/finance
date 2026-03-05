@@ -13,6 +13,7 @@ export const metadata = {
 };
 
 import { Toaster } from 'react-hot-toast';
+import PWA from '@/components/PWA';
 
 export default function RootLayout({ children }) {
   return (
@@ -24,6 +25,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body suppressHydrationWarning>
+        <PWA />
         <Toaster
           position="bottom-right"
           toastOptions={{
