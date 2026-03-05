@@ -63,7 +63,7 @@ async def debug_smtp():
         "ssl": settings.SMTP_USE_SSL
     }
 
-@app.post("/api/auth/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+@app.post("/api/v1/auth/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def register(user_data: UserCreate, db: Session = Depends(get_db)):
     """Register a new user"""
     # Check if user exists
@@ -166,7 +166,7 @@ async def register(user_data: UserCreate, db: Session = Depends(get_db)):
     
     return {"id": user_row.id, "email": user_row.email, "created_at": user_row.created_at}
 
-@app.post("/api/auth/login", response_model=Token)
+@app.post("/api/v1/auth/login", response_model=Token)
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     """Login and get access token"""
     result = db.execute(
@@ -186,7 +186,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
 
 # ============= Category Endpoints =============
 
-@app.get("/api/categories", response_model=List[CategoryWithSubcategories])
+@app.get("/api/v1/categories", response_model=List[CategoryWithSubcategories])
 async def get_categories(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
@@ -218,7 +218,7 @@ async def get_categories(
     
     return result
 
-@app.post("/api/categories", response_model=CategoryResponse, status_code=status.HTTP_201_CREATED)
+@app.post("/api/v1/categories", response_model=CategoryResponse, status_code=status.HTTP_201_CREATED)
 async def create_category(
     category_data: CategoryCreate,
     current_user: User = Depends(get_current_user),
@@ -244,7 +244,7 @@ async def create_category(
     
     return db_category
 
-@app.delete("/api/categories/{category_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/api/v1/categories/{category_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_category(
     category_id: int,
     current_user: User = Depends(get_current_user),
@@ -279,7 +279,7 @@ async def delete_category(
 
 # ============= Subcategory Endpoints =============
 
-@app.get("/api/subcategories", response_model=List[SubcategoryResponse])
+@app.get("/api/v1/subcategories", response_model=List[SubcategoryResponse])
 async def get_subcategories(
     category_id: Optional[int] = None,
     current_user: User = Depends(get_current_user),
@@ -318,7 +318,7 @@ async def get_subcategories(
         for sub in subcategories
     ]
 
-@app.post("/api/subcategories", response_model=SubcategoryResponse, status_code=status.HTTP_201_CREATED)
+@app.post("/api/v1/subcategories", response_model=SubcategoryResponse, status_code=status.HTTP_201_CREATED)
 async def create_subcategory(
     subcategory_data: SubcategoryCreate,
     current_user: User = Depends(get_current_user),
@@ -351,7 +351,7 @@ async def create_subcategory(
     
     return db_subcategory
 
-@app.delete("/api/subcategories/{subcategory_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/api/v1/subcategories/{subcategory_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_subcategory(
     subcategory_id: int,
     current_user: User = Depends(get_current_user),
@@ -369,7 +369,7 @@ async def delete_subcategory(
 
 # ============= Transaction Endpoints =============
 
-@app.get("/api/transactions", response_model=List[TransactionWithDetails])
+@app.get("/api/v1/transactions", response_model=List[TransactionWithDetails])
 async def get_transactions(
     category_id: Optional[int] = None,
     subcategory_id: Optional[int] = None,
@@ -401,7 +401,7 @@ async def get_transactions(
     
     return transactions
 
-@app.post("/api/transactions", response_model=TransactionResponse, status_code=status.HTTP_201_CREATED)
+@app.post("/api/v1/transactions", response_model=TransactionResponse, status_code=status.HTTP_201_CREATED)
 async def create_transaction(
     transaction_data: TransactionCreate,
     current_user: User = Depends(get_current_user),
@@ -453,7 +453,7 @@ async def create_transaction(
     
     return db_transaction
 
-@app.post("/api/transactions/bulk", status_code=status.HTTP_201_CREATED)
+@app.post("/api/v1/transactions/bulk", status_code=status.HTTP_201_CREATED)
 async def create_bulk_transactions(
     bulk_data: TransactionBulkCreate,
     current_user: User = Depends(get_current_user),
@@ -496,7 +496,7 @@ async def create_bulk_transactions(
     db.commit()
     return {"created": created_count, "message": f"Successfully created {created_count} transactions"}
 
-@app.put("/api/transactions/{transaction_id}", response_model=TransactionResponse)
+@app.put("/api/v1/transactions/{transaction_id}", response_model=TransactionResponse)
 async def update_transaction(
     transaction_id: int,
     transaction_data: TransactionCreate,
@@ -529,7 +529,7 @@ async def update_transaction(
     
     return db_transaction
 
-@app.delete("/api/transactions/{transaction_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/api/v1/transactions/{transaction_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_transaction(
     transaction_id: int,
     current_user: User = Depends(get_current_user),
@@ -547,7 +547,7 @@ async def delete_transaction(
     
     return None
 
-@app.get("/api/export/transactions")
+@app.get("/api/v1/export/transactions")
 async def export_transactions(
     range_type: str = "all", # today, week, month, year, all
     method: str = "download", # download, email
@@ -682,7 +682,7 @@ async def export_transactions(
 
 # ============= Budget Endpoints =============
 
-@app.get("/api/budgets", response_model=List[BudgetResponse])
+@app.get("/api/v1/budgets", response_model=List[BudgetResponse])
 async def get_budgets(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
@@ -692,7 +692,7 @@ async def get_budgets(
     budgets = db.query(Budget).filter(Budget.user_id == current_user.id).order_by(Budget.start_date.desc()).all()
     return budgets
 
-@app.post("/api/budgets", response_model=BudgetResponse, status_code=status.HTTP_201_CREATED)
+@app.post("/api/v1/budgets", response_model=BudgetResponse, status_code=status.HTTP_201_CREATED)
 async def create_budget(
     budget_data: BudgetCreate,
     current_user: User = Depends(get_current_user),
@@ -720,7 +720,7 @@ async def create_budget(
 
 # ============= Loan Endpoints =============
 
-@app.get("/api/loans", response_model=List[LoanResponse])
+@app.get("/api/v1/loans", response_model=List[LoanResponse])
 async def get_loans(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
@@ -729,7 +729,7 @@ async def get_loans(
     from models import Loan
     return db.query(Loan).filter(Loan.user_id == current_user.id).all()
 
-@app.post("/api/loans", response_model=LoanResponse, status_code=status.HTTP_201_CREATED)
+@app.post("/api/v1/loans", response_model=LoanResponse, status_code=status.HTTP_201_CREATED)
 async def create_loan(
     loan_data: LoanCreate,
     current_user: User = Depends(get_current_user),
@@ -781,7 +781,7 @@ async def create_loan(
     
     return db_loan
 
-@app.delete("/api/loans/{loan_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/api/v1/loans/{loan_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_loan(
     loan_id: int,
     current_user: User = Depends(get_current_user),
@@ -795,7 +795,7 @@ async def delete_loan(
 
 # ============= Analytics Endpoints =============
 
-@app.get("/api/analytics/summary", response_model=AnalyticsSummary)
+@app.get("/api/v1/analytics/summary", response_model=AnalyticsSummary)
 async def get_analytics_summary(
     start_date: Optional[datetime] = None,
     end_date: Optional[datetime] = None,
@@ -900,7 +900,7 @@ async def get_analytics_summary(
 
 # ============= Import Endpoint =============
 
-@app.post("/api/import/excel")
+@app.post("/api/v1/import/excel")
 async def import_excel(
     file: UploadFile = File(...),
     current_user: User = Depends(get_current_user),
